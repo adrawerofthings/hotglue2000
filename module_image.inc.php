@@ -103,11 +103,18 @@ function image_alter_render_early($args)
 		// render a div with an img inside
 		$i = elem('img');
 		elem_attr($i, 'src', $url);
-		if (!empty($obj['image-title'])) {
+		
+		//if (!empty($obj['image-title'])) {
+		//	elem_attr($i, 'alt', $obj['image-title']);
+		//} else {
+		//	elem_attr($i, 'alt', '');
+		//}
+		// replacing this alt text implementation (idk when image-title happens with manually set alt text)
+		if (!empty($obj['image-alt-text'])) {
+			elem_attr($i, 'alt', $obj['image-alt-text']);
+		} else if (!empty($obj['image-title'])) {
 			elem_attr($i, 'alt', $obj['image-title']);
-		} else {
-			elem_attr($i, 'alt', '');
-		}
+ 		}
 		// make sure you only append to the element in alter_render_early 
 		// handlers, don't assume that nothing is in there yet
 		elem_append($elem, $i);
@@ -116,15 +123,23 @@ function image_alter_render_early($args)
 			// background-size is not supported by IE8, so render a div with an img inside instead
 			$i = elem('img');
 			elem_attr($i, 'src', $url);
-			if (!empty($obj['image-title'])) {
+			
+			//if (!empty($obj['image-title'])) {
+			//	elem_attr($i, 'alt', $obj['image-title']);
+			//} else {
+			//	elem_attr($i, 'alt', '');
+			//}
+			// replacing this alt text implementation (idk when image-title happens with manually set alt text)
+			if (!empty($obj['image-alt-text'])) {
+				elem_attr($i, 'alt', $obj['image-alt-text']);
+			} else if (!empty($obj['image-title'])) {
 				elem_attr($i, 'alt', $obj['image-title']);
-			} else {
-				elem_attr($i, 'alt', '');
 			}
+
 			elem_css($i, 'width', '100%');
 			elem_css($i, 'height', '100%');
 			elem_css($i, 'padding', '0px');
-			elem_css($i, 'border', '0px');
+			elem_css($i, 'border-width', '0px');
 			if (!empty($obj['image-background-position']) && $obj['image-background-position'] != '0px 0px' && $obj['image-background-position'] != '0% 0%') {
 				elem_css($elem, 'max-width', $obj['object-width']);
 				elem_css($elem, 'max-height', $obj['object-height']);
@@ -163,6 +178,19 @@ function image_alter_render_early($args)
 	if (!empty($obj['image-title'])) {
 		elem_attr($elem, 'title', $obj['image-title']);
 	}
+
+	if (!empty($obj['image-border-radius'])) {
+		elem_css($elem, 'border-radius', $obj['image-border-radius']);
+	}
+
+	if (!empty($obj['image-box-shadow'])) {
+		elem_css($elem, 'box-shadow', $obj['image-box-shadow']);
+	}
+
+	if (!empty($obj['image-alt-text'])) {
+		elem_attr($elem, 'alt', $obj['image-alt-text']);
+	}
+
 	
 	return true;
 }
@@ -202,7 +230,24 @@ function image_alter_save($args)
 	} else {
 		unset($obj['image-background-position']);
 	}
-	
+	if (elem_css($elem, 'border-radius') !== NULL) {
+		$obj['image-border-radius'] = elem_css($elem, 'border-radius');
+	} else {
+		unset($obj['image-border-radius']);
+	}
+	if (elem_css($elem, 'box-shadow') !== NULL) {
+		$obj['image-box-shadow'] = elem_css($elem, 'box-shadow');
+	} else {
+		unset($obj['image-box-shadow']);
+	}
+
+	// alt text!
+	if (elem_attr($elem, 'alt') !== NULL) {
+		$obj['image-alt-text'] = elem_attr($elem, 'alt');
+	} else {
+		unset($obj['image-alt-text']);
+	}
+
 	// this is more out of courtesy than anything else
 	return true;
 }

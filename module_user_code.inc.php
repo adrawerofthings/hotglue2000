@@ -22,6 +22,8 @@ require_once('util.inc.php');
  *	controller that shows a textarea for editing either a page's or the global 
  *	user-defined code files
  */
+
+/*
 function controller_user_code_stylesheet($args)
 {
 	if ($args[0][1] == 'code') {
@@ -133,7 +135,7 @@ function user_code_render_page_early($args)
 		}
 	}
 }
-
+*/
 
 /**
  *	set the user-defined code files
@@ -145,6 +147,7 @@ function user_code_render_page_early($args)
  *	@return array response
  *		true if successful
  */
+/*
 function user_code_set_code($args)
 {
 	if (!isset($args['page']) || ($args['page'] !== false && !page_exists($args['page']))) {
@@ -189,3 +192,4 @@ function user_code_set_code($args)
 }
 
 register_service('user_code.set_code', 'user_code_set_code', array('auth'=>true));
+*/

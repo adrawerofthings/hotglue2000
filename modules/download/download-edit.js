@@ -34,7 +34,7 @@ $(document).ready(function() {
 	// register menu items
 	//
 	var elem;
-	elem = $('<img src="'+$.glue.base_url+'img/download.png" alt="btn" title="download file" width="32" height="32">');
+	elem = $('<div class="elemcustom">💾 Download file</div>');
 	$(elem).bind('click', function(e) {
 		var obj = $(this).data('owner');
 		// initite download
@@ -42,20 +42,22 @@ $(document).ready(function() {
 	});
 	$.glue.contextmenu.register('download', 'download-download', elem);
 	
-	elem = $('<div alt="btn" style="height: 32px; width: 32px;">');
+	elem = $('<div class="elemcustom">🫥 This object is only shown while editing (click to make public)</div>');
 	$(elem).bind('glue-menu-activate', function(e) {
 		var obj = $(this).data('owner');
 		var that = this;
 		// check if object is public
 		$.glue.backend({ method: 'glue.load_object', name: $(obj).attr('id') }, function(data) {
 			if (data['download-public'] == 'public') {
+				$(that).text('😐 This object is shown publicly (click to make private)');
 				$(that).addClass('glue-menu-enabled');
 				$(that).removeClass('glue-menu-disabled');
-				$(that).attr('title', 'this object is shown to everyone - click to make it private');
+				//$(that).attr('title', 'this object is shown to everyone - click to make it private');
 			} else {
+				$(that).text('🫥 This object is only shown while editing (click to make public)');
 				$(that).removeClass('glue-menu-enabled');
 				$(that).addClass('glue-menu-disabled');
-				$(that).attr('title', 'this object is only shown while editing - click to make it public');
+				//$(that).attr('title', 'this object is only shown while editing - click to make it public');
 			}
 		});
 	});
@@ -65,14 +67,17 @@ $(document).ready(function() {
 		if ($(this).hasClass('glue-menu-enabled')) {
 			$(this).removeClass('glue-menu-enabled');
 			$(this).addClass('glue-menu-disabled');
-			$(this).attr('title', 'this object is only shown while editing - click to make it public');
+			//$(this).attr('title', 'this object is only shown while editing - click to make it public');
+			$(this).text('🫥 This object is only shown while editing (click to make public)');
 			// clear public attribute
 			$.glue.backend({ method: 'glue.object_remove_attr', name: $(obj).attr('id'), attr: 'download-public' });
 		} else if ($(this).hasClass('glue-menu-disabled')) {
 			$(this).addClass('glue-menu-enabled');
 			$(this).removeClass('glue-menu-disabled');
-			$(this).attr('title', 'this object is shown to everyone - click to make it private');
+			//$(this).attr('title', 'this object is shown to everyone - click to make it private');
+			$(this).text('😐 This object is shown publicly (click to make private)');
 			// set public attribute
+
 			$.glue.backend({ method: 'glue.update_object', name: $(obj).attr('id'), 'download-public': 'public' });
 		}
 	});

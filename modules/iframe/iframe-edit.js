@@ -11,7 +11,8 @@ $(document).ready(function() {
 	//
 	// menu items
 	//
-	var elem = $('<img src="'+$.glue.base_url+'modules/iframe/iframe.png" alt="btn" title="embed another webpage" width="32" height="32">');
+	
+	var elem = $('<div class="elemcustom">📑 Embed another webpage</div>');
 	$(elem).bind('click', function(e) {
 		var url = prompt('Enter the URL to show');
 		if (!url) {
@@ -31,7 +32,7 @@ $(document).ready(function() {
 			// put the iframe behind some shield for editing
 			child = $('<div class="glue-iframe-shield glue-ui" style="height: 100%; position: absolute; width: 100%;" title="visitors will be able to interact with the webpage below"></div>');
 			$(elem).append(child);
-			$('body').append(elem);
+			$('#objects-container').append(elem);
 			// make width and height explicit
 			$(elem).css('width', $(elem).width()+'px');
 			$(elem).css('height', $(elem).height()+'px');
@@ -48,7 +49,7 @@ $(document).ready(function() {
 	//
 	// context menu items
 	//
-	elem = $('<img src="'+$.glue.base_url+'modules/iframe/iframe-url.png" alt="btn" title="change webpage url" width="32" height="32">');
+	elem = $('<div class="elemcustom">🔗 Change webpage URL</div>');
 	$(elem).bind('click', function(e) {
 		var obj = $(this).data('owner');
 		var child = $(obj).children('iframe').first();
@@ -63,7 +64,7 @@ $(document).ready(function() {
 	});
 	$.glue.contextmenu.register('iframe', 'iframe-url', elem);
 	
-	elem = $('<div style="height: 32px; width: 32px;" title="toggle scrollbars on and off">');
+	elem = $('<div class="elemcustom">↕️ Toggle scrollbars on and off</div>');
 	$(elem).bind('click', function(e) {
 		var obj = $(this).data('owner');
 		var child = $(obj).children('iframe').first();

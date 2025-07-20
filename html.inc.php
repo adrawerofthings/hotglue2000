@@ -590,6 +590,15 @@ function html_finalize(&$cache = false)
 	$ret .= '<head>'.nl();
 	$ret .= '<title>'.htmlspecialchars($html['header']['title'], ENT_NOQUOTES, 'UTF-8').'</title>'.nl();
 	$ret .= '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'.nl();
+	if (!empty($html['header']['description'])) {
+	    $ret .= '<meta name="description" content="'.htmlspecialchars($html['header']['description'], ENT_COMPAT, 'UTF-8').'" />'.nl();
+	}	$ret .= '<meta name="viewport" content="width=device-width, initial-scale=1">'.nl();
+	$ret .= '<meta property="og:title" content="'.htmlspecialchars($html['header']['title'], ENT_NOQUOTES, 'UTF-8').'" />'.nl();
+	$ret .= '<meta property="og:type" content="website" />'.nl();
+	$ret .= '<meta property="og:url" content="'.'https://'. $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'].'" />'.nl();
+	if (!empty($html['header']['description'])) {
+	    $ret .= '<meta property="og:description" content="'.htmlspecialchars($html['header']['description'], ENT_COMPAT, 'UTF-8').'" />'.nl();
+	}
 	if (@is_array($html['header']['alternate'])) {
 		foreach ($html['header']['alternate'] as $e) {
 			$ret .= '<link rel="alternate" type="'.htmlspecialchars($e['type'], ENT_COMPAT, 'UTF-8').'" href="'.htmlspecialchars($e['url'], ENT_COMPAT, 'UTF-8').'" title="'.htmlspecialchars($e['title'], ENT_COMPAT, 'UTF-8').'">'.nl();
@@ -728,5 +737,20 @@ function html_title()
 		return $html['header']['title'];
 	} elseif (0 < func_num_args()) {
 		$html['header']['title'] = func_get_arg(0);
+	}
+}
+
+/**
+ *	get or set description
+ *
+ *	@param string description (to set it)
+ */
+function html_description()
+{
+	global $html;
+	if (func_num_args() == 0) {
+		return $html['header']['description'];
+	} elseif (0 < func_num_args()) {
+		$html['header']['description'] = func_get_arg(0);
 	}
 }

@@ -43,7 +43,7 @@ $(document).ready(function() {
 	var elem;
 	$.glue.contextmenu.hide();
 
-	elem = $('<img src="'+$.glue.base_url+'modules/lock/lock.png" alt="btn" title="lock object" width="32" height="32">');
+	elem = $('<div class="elemcustom">🔒 Lock object</div>');
 
 	$(elem).bind('glue-menu-activate', function(e) {
 		var obj = $(this).data('owner');
@@ -61,12 +61,14 @@ $(document).ready(function() {
 
 		if ($(obj).hasClass('locked')) {
 			$(obj).removeClass('locked');
+			$(elem)[0].innerHTML = "🔒 Lock object";
 			$(obj).draggable('enable');
 			$(obj).resizable('enable');
 			$.glue.contextmenu.hide();
 			$.glue.contextmenu.show(obj);
 		} else {
 			$(obj).addClass('locked');
+			$(elem)[0].innerHTML = "🔒 Unlock object";
 			$(obj).draggable('disable');
 			$(obj).resizable('disable');
 			if ($(obj).hasClass('text')) {

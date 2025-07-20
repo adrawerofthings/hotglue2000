@@ -39,14 +39,14 @@
 
 .glue-contextmenu-left {
 	/* a context menu item to the object's left */
-	margin-bottom: 10px;
-	margin-right: 20px;
+	margin-bottom: 4px;
+	margin-right: 10px;
 }
 
 .glue-contextmenu-top {
 	/* a context menu item on top of the object */
-	margin-bottom: 20px;
-	margin-right: 10px;
+	margin-bottom: 4px;
+	margin-left: 10px;
 }
 
 .glue-grid {
@@ -75,10 +75,12 @@
 
 .glue-menu {
 	/* a menu item */
-	margin-bottom: 5px;
+	/* margin-bottom: 5px;
 	margin-left: 5px;
 	margin-right: 5px;
-	margin-top: 5px;
+	margin-top: 5px; */
+	margin-bottom: 2px;
+	margin-top: 2px;
 	opacity: 1.0;
 }
 
@@ -103,9 +105,9 @@
 
 .glue-selected {
 	/* class for selected objects */
-	border-color: red;
-	border-style: dashed;
-	border-width: 1px;
+	outline: red;
+	outline-style: dashed;
+	outline-width: 1px;
 }
 
 .glue-ui {
@@ -146,3 +148,8 @@
 .ui-resizable-sw { cursor: sw-resize; width: 9px; height: 9px; left: -5px; bottom: -5px; }
 .ui-resizable-nw { cursor: nw-resize; width: 9px; height: 9px; left: -5px; top: -5px; }
 .ui-resizable-ne { cursor: ne-resize; width: 9px; height: 9px; right: -5px; top: -5px;}
+
+/* edit icon glows when editing */
+#glue-gun-icon {
+	box-shadow: 0px 0px 0px 2px #0a2849;
+}

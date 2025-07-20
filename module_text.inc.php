@@ -107,7 +107,9 @@ function _text_render_content($s, $name)
 {
 	// resolve any aliases
 	$s = resolve_aliases($s, $name);
-	$s = html_encode_str_smart($s);
+	// removing ability to write HTML tags in boxes
+	//$s = html_encode_str_smart($s);
+	$s = htmlspecialchars($s);
 	// automatically add <br> elements for newlines
 	if (TEXT_AUTO_BR) {
 		$s = str_replace("\r\n", "\n", $s);
@@ -257,7 +259,25 @@ function text_alter_save($args)
 	} else {
 		unset($obj['text-word-spacing']);
 	}
-	
+	// border-radius
+	if (elem_css($elem, 'border-radius') !== NULL) {
+		$obj['text-border-radius'] = elem_css($elem, 'border-radius');
+	} else {
+		unset($obj['text-border-radius']);
+	}
+	// box-shadow
+	if (elem_css($elem, 'box-shadow') !== NULL) {
+		$obj['text-box-shadow'] = elem_css($elem, 'box-shadow');
+	} else {
+		unset($obj['text-box-shadow']);
+	}
+	// h1 helper
+	if (elem_has_class($elem, 'h1-title-div')) {
+		$obj['has-h1-title-div'] = true;
+	} else {
+		$obj['has-h1-title-div'] = false;
+	}
+
 	return true;
 }
 
@@ -359,6 +379,18 @@ function text_alter_render_early($args)
 	// word-spacing
 	if (!empty($obj['text-word-spacing'])) {
 		elem_css($elem, 'word-spacing', $obj['text-word-spacing']);
+	}
+	// border-radius
+	if (!empty($obj['text-border-radius'])) {
+		elem_css($elem, 'border-radius', $obj['text-border-radius']);
+	}
+	// box-shadow
+	if (!empty($obj['text-box-shadow'])) {
+		elem_css($elem, 'box-shadow', $obj['text-box-shadow']);
+	}
+	// h1 helper
+	if (!empty($obj['has-h1-title-div']) && $obj['has-h1-title-div'] == true) {
+		elem_add_class($elem, 'h1-title-div');
 	}
 	
 	return true;

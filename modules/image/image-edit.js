@@ -174,7 +174,25 @@ $(document).ready(function() {
 	//
 	// register menu items
 	//
-	var elem = $('<img src="'+$.glue.base_url+'modules/image/image-tile.png" alt="btn" title="toggle image tiling" width="32" height="32">');
+	var elem = $('<div class="elemcustom">🔲 Change image frame shape</div>');
+	$(elem).bind('click', function(e) {
+		var obj = $(this).data('owner');		
+		if ($(obj).css('border-radius') == '' || $(obj).css('border-radius') == '0px') {
+			$(obj).css('border-radius', '4px');
+		} else if ($(obj).css('border-radius') == '4px' ) {
+			$(obj).css('border-radius', '8px');
+		} else if ($(obj).css('border-radius') == '8px' ) {
+			$(obj).css('border-radius', '16px');
+		} else if ($(obj).css('border-radius') == '16px' ) {
+			$(obj).css('border-radius', '9999px');
+		} else {
+			$(obj).css('border-radius', '0px');
+		}
+		$.glue.object.save(obj);
+	});
+	$.glue.contextmenu.register('image', 'image-radius', elem);	
+
+	elem = $('<div class="elemcustom">🀄️ Toggle image tiling</div>');
 	$(elem).bind('click', function(e) {
 		var obj = $(this).data('owner');
 		if ($(obj).css('background-repeat') != 'no-repeat') {
@@ -190,39 +208,33 @@ $(document).ready(function() {
 		}
 		$.glue.object.save(obj);
 	});
-	$.glue.contextmenu.register('image', 'image-tile', elem);
-	
-	elem = $('<img src="'+$.glue.base_url+'modules/image/image-ratio.png" alt="btn" title="reset image size" width="32" height="32">');
+	$.glue.contextmenu.register('image', 'image-tile', elem);	
+
+	elem = $('<div class="elemcustom">😎 Add/change box shadow</div>');
 	$(elem).bind('click', function(e) {
 		var obj = $(this).data('owner');
-		// get original-{width,height} from backend
-		$.glue.backend({ method: 'glue.load_object', name: $(obj).attr('id') }, function(data) {
-			if (data['image-file-width'] && data['image-file-height']) {
-				var aspect = data['image-file-width']/data['image-file-height'];
-				$(obj).trigger('glue-resizestart');
-				if (e.shiftKey) {
-					// shift: only change aspect ratio
-					// fit height to width
-					$(obj).css('height', ($(obj).width()/aspect)+'px');
-				} else if (e.ctrlKey) {
-					// ctrl: only change aspect ratio
-					// fit width to heigth
-					$(obj).css('width', ($(obj).height()*aspect)+'px');
-				} else {
-					$(obj).css('width', data['image-file-width']+'px');
-					$(obj).css('height', data['image-file-height']+'px');
-				}
-				$(obj).trigger('glue-resize');
-				$.glue.object.resizable_update_tooltip(obj);
-				$.glue.object.save(obj);
-				$(obj).trigger('glue-resizestop');
-				$.glue.canvas.update(obj);
-			}
-		});
+
+		var cur_boxshadow = $(obj).css('box-shadow');
+
+		console.log(cur_boxshadow);
+
+		if ( cur_boxshadow == '1px 1px 2px 0px rgba(0, 0, 0, 0.5)' || cur_boxshadow == 'rgba(0, 0, 0, 0.5) 1px 1px 2px 0px' ) {
+			$(obj).css('box-shadow', '3px 3px 0px 0px rgba(0, 0, 0, 0.8)');
+		} else if ( cur_boxshadow == '3px 3px 0px 0px rgba(0, 0, 0, 0.8)' || cur_boxshadow == 'rgba(0, 0, 0, 0.8) 3px 3px 0px 0px' ) {
+			$(obj).css('box-shadow', '6px 6px 2px 0px rgba(0, 0, 0, 0.9)');
+		} else if ( cur_boxshadow == '6px 6px 2px 0px rgba(0, 0, 0, 0.9)' || cur_boxshadow == 'rgba(0, 0, 0, 0.9) 6px 6px 2px 0px' ) {
+			$(obj).css('box-shadow', '-32px 32px 6px -4px rgba(0, 0, 0, 0.6)');
+		} else if ( cur_boxshadow == '0px 0px 12px 2px rgba(255, 255, 233, 0.8)' || cur_boxshadow == 'rgba(255, 255, 233, 0.8) 0px 0px 12px 2px' ) {
+			$(obj).css('box-shadow', '0px 0px 12px 2px rgba(255, 255, 233, 0.8)');
+		} else {
+			$(obj).css('box-shadow', '1px 1px 2px 0px rgba(0, 0, 0, 0.5)');
+		}
+		$.glue.object.save(obj);
+
 	});
-	$.glue.contextmenu.register('image', 'image-ratio', elem);
-	
-	elem = $('<img src="'+$.glue.base_url+'modules/image/image-pos.png" alt="btn" title="adjust image selection" width="32" height="32">');
+	$.glue.contextmenu.register('image', 'image-box-shadow', elem);
+
+	elem = $('<div class="elemcustom">🧗🏿‍♂️ Adjust image position (click & drag)</div>');
 	$(elem).bind('mousedown', function(e) {
 		var obj = $(this).data('owner');
 		var a = $(obj).css('background-position').split(' ');
@@ -259,8 +271,53 @@ $(document).ready(function() {
 		return false;
 	});
 	$.glue.contextmenu.register('image', 'image-pos', elem);
+
+	elem = $('<div class="elemcustom">🐣 Reset image size</div>');
+	$(elem).bind('click', function(e) {
+		var obj = $(this).data('owner');
+		// get original-{width,height} from backend
+		$.glue.backend({ method: 'glue.load_object', name: $(obj).attr('id') }, function(data) {
+			if (data['image-file-width'] && data['image-file-height']) {
+				var aspect = data['image-file-width']/data['image-file-height'];
+				$(obj).trigger('glue-resizestart');
+				if (e.shiftKey) {
+					// shift: only change aspect ratio
+					// fit height to width
+					$(obj).css('height', ($(obj).width()/aspect)+'px');
+				} else if (e.ctrlKey) {
+					// ctrl: only change aspect ratio
+					// fit width to heigth
+					$(obj).css('width', ($(obj).height()*aspect)+'px');
+				} else {
+					$(obj).css('width', data['image-file-width']+'px');
+					$(obj).css('height', data['image-file-height']+'px');
+				}
+				$(obj).trigger('glue-resize');
+				$.glue.object.resizable_update_tooltip(obj);
+				$.glue.object.save(obj);
+				$(obj).trigger('glue-resizestop');
+				$.glue.canvas.update(obj);
+			}
+		});
+	});
+	$.glue.contextmenu.register('image', 'image-ratio', elem);
 	
-	elem = $('<img src="'+$.glue.base_url+'img/download.png" alt="btn" title="download original file" width="32" height="32">');
+	elem = $('<div class="elemcustom">🗣️ Add/edit image description (for screen readers)</div>');
+	$(elem).bind('click', function(e) {
+		var obj = $(this).data('owner');
+		
+		var alttext = $(obj).attr('alt');
+		alttext = prompt('Describe the image in 1-3 sentences', alttext);
+		if (alttext === null) {
+			return;
+		}
+
+		$(obj).attr('alt', alttext);
+		$.glue.object.save(obj);
+	});
+	$.glue.contextmenu.register('image', 'image-alt-text', elem);
+	
+	elem = $('<div class="elemcustom">💾 Download original file</div>');
 	$(elem).bind('click', function(e) {
 		var obj = $(this).data('owner');
 		// initiate download

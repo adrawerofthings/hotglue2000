@@ -92,7 +92,9 @@ function default_html($add_glue)
 		html_add_css(base_url().'css/reset.css', 1);
 	}
 	// 2 can be used for third-party components
+	html_add_css(base_url().'css/tachyons-verbose.css', 3);
 	html_add_css(base_url().'css/main.css', 3);
+	html_add_css(base_url().'css/responsive_design_guide.css', 3);
 	if ($add_glue) {
 		html_add_css(base_url().'css/glue.css', 4);
 	}
@@ -112,9 +114,71 @@ function default_html($add_glue)
 		html_add_js_var('$.glue.base_url', base_url());
 		html_add_js_var('$.glue.conf.show_frontend_errors', SHOW_FRONTEND_ERRORS);
 		html_add_js_var('$.glue.version', glue_version());
+	} else {
+		// this else has the effect of only loading this if not in editing mode
+		html_add_js(base_url().'js/accessibilityhotfix.js', 4);		
 	}
-}
+	html_add_js(base_url().'js/mobileviewporthotfix.js', 5);
 
+
+	body_append('<div class="position-fixed bottom-0 right-0 padding-small  zindex-999"><button id="glue-gun-icon" onclick="editToggle()" class="cursor-pointer float-right backgroundcolor-tint10 borderstyle-dotted borderwidth-2 padding-xsmall bordercolor-blue2 borderradius-2 right-1"><img src="'.htmlspecialchars(base_url(), ENT_COMPAT, 'UTF-8').'img/hotglue-favicon-big.png" class="width-large height-large display-inlineblock" alt="hotglue pixel art icon"><span class="screen-reader-text">Hotglue edit! Or exit editing mode if you\'re in it</span></button></div>
+		<div id="objects-container"></div>');
+
+	// URL change depends on whether clean URLs is enabled
+	// can't figure out how to check for it properly just for the subdirectory
+	// so checking if .htaccess file is available is the next best thing for now
+    $htaccess_path = __DIR__ . '/.htaccess';
+    if (file_exists($htaccess_path) && is_readable($htaccess_path)) {
+        body_append('<script>
+					function editToggle() {
+						cur_url = window.location.href;
+						cur_url_lastfive = cur_url.slice(-5);
+						cur_url_lastone = cur_url.slice(-1);
+						cur_url_length = cur_url.length;
+						if (cur_url_lastfive == "/edit") {
+							notedit_url = cur_url.slice(0, cur_url_length - 5);
+							window.location.href = notedit_url;
+						} else if (cur_url_lastfive == "edit/") {
+							notedit_url = cur_url.slice(0, cur_url_length - 5);
+							window.location.href = notedit_url;
+						} else if (cur_url_lastone == "/") {
+							window.location.href = cur_url+"edit";
+						} else {
+							window.location.href = cur_url+"/edit";
+						};
+					};</script>');
+    } else {
+        body_append('<script>
+					function editToggle() {
+						cur_url = window.location.href;
+						cur_url_lastfive = cur_url.slice(-5);
+						cur_url_lastone = cur_url.slice(-1);
+						cur_url_length = cur_url.length;
+						if (cur_url_lastfive == "?edit") {
+							notedit_url = cur_url.slice(0, cur_url_length - 5);
+							window.location.href = notedit_url;
+						} else if (cur_url_lastfive == "edit/") {
+							notedit_url = cur_url.slice(0, cur_url_length - 6);
+							window.location.href = notedit_url;
+						} else if (cur_url_lastfive == "/edit") {
+							notedit_url = cur_url.slice(0, cur_url_length - 5);
+							window.location.href = notedit_url;
+						} else if (cur_url.indexOf("?") == -1) {
+							if (cur_url_lastone == "/") {
+								window.location.href = cur_url+"?edit";
+							} else {
+								window.location.href = cur_url+"/?edit";
+							}
+						} else {
+							if (cur_url_lastone == "/") {
+								window.location.href = cur_url+"edit";
+							} else {
+								window.location.href = cur_url+"/edit";
+							}
+						};
+					};</script>');
+	}	
+}
 
 /**
  *	remove a page from the cache
@@ -283,9 +347,15 @@ function is_auth()
 			list($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW']) = explode(':' , base64_decode(substr($_SERVER['Authorization'], 6)));
 		}
 		if (isset($_SERVER['PHP_AUTH_USER']) && isset($_SERVER['PHP_AUTH_PW'])) {
-			if ($_SERVER['PHP_AUTH_USER'] == AUTH_USER && $_SERVER['PHP_AUTH_PW'] == AUTH_PASSWORD) {
-				log_msg('debug', 'common: auth success (auth_method basic)');
-				return true;
+			if ($_SERVER['PHP_AUTH_USER'] == AUTH_USER) {
+			// && $_SERVER['PHP_AUTH_PW'] == AUTH_PASSWORD) {
+				if (password_verify($_SERVER['PHP_AUTH_PW'], AUTH_PASSWORD)) {
+					log_msg('debug', 'common: auth success (auth_method basic)');
+					return true;
+				} else {
+					log_msg('info', 'common: auth failure (auth_method basic)');
+					return false;
+				}
 			} else {
 				log_msg('info', 'common: auth failure (auth_method basic)');
 				return false;
@@ -298,6 +368,7 @@ function is_auth()
 			}
 			return false;
 		}
+	/* goodbye digest! long live HTTPS + basic auth
 	} elseif (AUTH_METHOD == 'digest') {
 		if (isset($_SERVER['PHP_AUTH_DIGEST'])) {
 			log_msg('debug', 'common: auth digest '.var_dump_inl($_SERVER['PHP_AUTH_DIGEST']));
@@ -317,6 +388,7 @@ function is_auth()
 			}
 			return false;
 		}
+	*/
 	} else {
 		log_msg('error', 'common: invalid or missing AUTH_METHOD config setting');
 		return false;

@@ -283,6 +283,11 @@ function video_snapshot_symlink($args)
 function video_upload($args)
 {
 	$ext = filext($args['file']);
+
+
+	/* disabling video uploads here */
+	return false;
+	/*
 	if ($args['mime'] == 'video/ogg' || $ext == 'ogv' || $ext == 'ogg') {
 		// notice: we also handle ogg here although this also could be a 
 		// different mime type
@@ -299,7 +304,7 @@ function video_upload($args)
 		$mime = 'video/webm';
 	} else {
 		return false;
-	}
+	}  */
 	
 	load_modules('glue');
 	$obj = create_object($args);

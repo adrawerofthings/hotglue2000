@@ -7,6 +7,7 @@
  *	See the file COPYING for more details.
  */
 
+
 $.glue.canvas = function()
 {
 	return {
@@ -14,6 +15,7 @@ $.glue.canvas = function()
 			if (elem === undefined) {
 				elem = $('.object');
 			}
+			/*
 			var max_x = 0;
 			var max_y = 0;
 			$(elem).each(function() {
@@ -37,7 +39,7 @@ $.glue.canvas = function()
 			$('body').css('width', max_x+'px');
 			$('body').css('height', max_y+'px');
 			// update grid
-			$.glue.grid.update();
+			$.glue.grid.update();*/
 		}
 	};
 }();
@@ -96,7 +98,7 @@ $.glue.colorpicker = function()
 				shown = false;
 			}
 			// unregister event
-			$('body').unbind('click', close_colorpicker);
+			$('#objects-container').unbind('click', close_colorpicker);
 		},
 		is_shown: function() {
 			return shown;
@@ -323,6 +325,7 @@ $.glue.contextmenu = function()
 				var target;
 				var cur_left = $(obj).position().left;
 				var cur_top = $(obj).position().top;
+
 				var offset = 48; // menu offset (when can't calculate height or width)
 				if (i == 0) {
 					target = top;
@@ -369,8 +372,15 @@ $.glue.contextmenu = function()
 					$(target[j].elem).css('visibility', 'hidden');
 					$(target[j].elem).css('z-index', '201');
 					// add to dom and move
-					$('body').append(target[j].elem);
+					//$('body').append(target[j].elem);
+					$('#objects-container').append(target[j].elem);
+					// reconfiguring top to be right for new longer button contextmenu style
 					if (target == top) {
+						var temp_right = cur_left+$(obj).outerWidth();
+						$(target[j].elem).css('left', temp_right+'px');
+						$(target[j].elem).css('top', cur_top+'px');
+						var cur_height = $(target[j].elem).outerHeight(true);
+						/*
 						$(target[j].elem).css('left', cur_left+'px');
 						var temp_top = cur_top-$(target[j].elem).outerHeight(true);
 						if (temp_top < 0) {
@@ -378,6 +388,7 @@ $.glue.contextmenu = function()
 						}
 						$(target[j].elem).css('top', temp_top+'px');
 						var cur_width = $(target[j].elem).outerWidth(true);
+						*/
 					} else {
 						var temp_left = cur_left-$(target[j].elem).outerWidth(true);
 						if (temp_left < 0) {
@@ -398,7 +409,8 @@ $.glue.contextmenu = function()
 					if (target == left) {
 						cur_top += cur_height;
 					} else {
-						cur_left += cur_width;
+						cur_top += cur_height;
+						// cur_left += cur_width;
 					}
 					$(target[j].elem).css('visibility', '');
 					$(target[j].elem).hide();
@@ -640,7 +652,7 @@ $.glue.menu = function()
 				}
 				cur = false;
 			}
-			$('body').unbind('click', close_menu);
+			$('#objects-container').unbind('click', close_menu);
 		},
 		// return whether or not a menu is shown
 		// menu .. menu name (if undefined, any menu)
@@ -724,7 +736,8 @@ $.glue.menu = function()
 				$(elem).css('visibility', 'hidden');
 				$(elem).css('z-index', '201');
 				// add to dom
-				$('body').append(elem);
+				// $('body').append(elem);
+				$('#objects-container').append(elem);
 				// trigger event
 				$(elem).trigger('glue-menu-activate');
 				// check if we still want to show the icon ;)
@@ -744,9 +757,10 @@ $.glue.menu = function()
 			}
 			// position items
 			var num_rows = 1;
-			while (num_rows*num_rows < num_shown) {
-				num_rows++;
-			}
+			// ONE ROW ONLY!
+			// while (num_rows*num_rows < num_shown) {
+			//	num_rows++;
+			// }
 			var num_cols = num_rows;
 			if (num_shown <= num_rows*(num_rows-1)) {
 				num_cols--;
@@ -770,11 +784,12 @@ $.glue.menu = function()
 					left: (x-(num_rows*max_w)/2+cur_col*max_w)+'px',
 					opacity: 1.0,
 					top: (y-(num_rows*max_h)/2+cur_row*max_h)+'px'
-				}, 200);
+				}, 0); // prev value 200 for time
 				cur_col++;
 			}
 			// register close menu event and set prev_menu
-			$('body').bind('click', close_menu);
+			// $('body').bind('click', close_menu);
+			$('#objects-container').bind('click', close_menu);
 			prev_menu = menu;
 			// convert x, y to page and save them
 			spawn_coords = {x: $(document).scrollLeft()+x, y: $(document).scrollTop()+y};
@@ -844,6 +859,10 @@ $.glue.object = function()
 			$(obj).removeClass('ui-draggable-dragging');
 		});
 		$.glue.object.register_alter_pre_save('glue-selected', function(obj, orig) {
+			// temporary download and reset transform property as it messes up the positioning later
+			var csstransform = $(obj).css('transform');
+			$(obj).css('transform', '');
+
 			var border = $(orig).outerHeight()-$(orig).innerHeight();
 			var p = $(orig).position();
 			// remove class
@@ -851,6 +870,8 @@ $.glue.object = function()
 			// and remove border offset
 			$(obj).css('left', (p.left+border/2)+'px');
 			$(obj).css('top', (p.top+border/2)+'px');
+
+			$(obj).css('transform', csstransform);
 			//$(obj).css('width', ($(orig).width()+border)+'px');
 			//$(obj).css('height', ($(orig).height()+border)+'px');
 		});
@@ -927,7 +948,7 @@ $.glue.sel = function()
 	
 	// this could probably also be body
 	$('html').bind('click', function(e) {
-		if (e.target == $('body').get(0)) {
+		if (e.target == $('#objects-container').get(0)) {
 			if ($('.glue-selected').length) {
 				// deselect when clicking on background
 				$.glue.sel.none();
@@ -1264,12 +1285,19 @@ $.glue.sel = function()
 		// obj .. element
 		deselect: function(obj) {
 			if ($(obj).hasClass('glue-selected')) {
+				
+				// temporary download and reset transform property as it messes up the positioning later
+				var csstransform = $(obj).css('transform');
+				$(obj).css('transform', '');
+
 				var border = $(obj).outerHeight()-$(obj).innerHeight();
 				$(obj).removeClass('glue-selected');
 				$(obj).trigger('glue-deselect');
 				var p = $(obj).position();
 				$(obj).css('left', (p.left+border/2)+'px');
 				$(obj).css('top', (p.top+border/2)+'px');
+				
+				$(obj).css('transform', csstransform);
 				//$(obj).css('width', ($(obj).width()+border)+'px');
 				//$(obj).css('height', ($(obj).height()+border)+'px');
 				// DEBUG
@@ -1294,10 +1322,18 @@ $.glue.sel = function()
 				// act accordingly (there seem to be a problem with getting the 
 				// information through jQuery 1.4.3 however)
 				// also needs changes above and in register_alter_pre_save
+				
+				// temporary download and reset transform property as it messes up the positioning later
+				var csstransform = $(obj).css('transform');
+				$(obj).css('transform', '');
+
 				var p = $(obj).position();
 				var border = $(obj).outerHeight()-$(obj).innerHeight();
-				$(obj).css('left', (p.left-border/2)+'px');
-				$(obj).css('top', (p.top-border/2)+'px');
+				$(obj).css('left', (p.left+border/2)+'px');
+				$(obj).css('top', (p.top+border/2)+'px');
+				
+				$(obj).css('transform', csstransform);
+				// end de-commenting
 				//$(obj).css('width', ($(obj).width()-border)+'px');
 				//$(obj).css('height', ($(obj).height()-border)+'px');
 				// DEBUG
@@ -1566,7 +1602,7 @@ $.glue.upload = function()
 	
 	$(document).ready(function() {
 		// generic upload button
-		var elem = $('<div style="height: 32px; max-height: 32px; max-width: 32px; overflow: hidden; width: 32px;"><img src="'+$.glue.base_url+'img/upload.png" alt="btn" width="32" height="32"></div>');
+		var elem = $('<div class="elemcustom">🖼️ Upload an image</div>');
 		var upload = default_upload_handling();
 		upload.multiple = true;
 		$.glue.upload.button(elem, { method: 'glue.upload_files', page: $.glue.page }, upload);
@@ -1614,7 +1650,7 @@ $.glue.upload = function()
 			if (!options.tooltip) {
 				options.tooltip = 'upload a file';
 			}
-			$(elem).prepend('<input type="file" title="'+options.tooltip+'" style="height: 100%; opacity: 0; position: absolute; width: 100%; z-index: 300;">');
+			$(elem).prepend('<input type="file" title="'+options.tooltip+'" style="height: 100%; opacity: 0; position: absolute; width: 100%; z-index: 300; cursor: pointer;">');
 			if (options.multiple) {
 				$(elem).children('input').first().attr('multiple', 'multiple');
 			}
@@ -1810,14 +1846,16 @@ $.glue.upload = function()
 						$(obj).data('orig_visibility', $(obj).css('visibility'));
 						$(obj).css('visibility', 'hidden');
 						// add to dom
-						$('body').append(obj);
+						// $('body').append(obj);
+						$('#objects-container').append(obj);
 						// DEBUG
 						//console.log('glue-upload-dynamic-early: '+$(obj).attr('id'));
 						// fire handler
 						$(obj).trigger('glue-upload-dynamic-early', [ mode, target_x, target_y ]);
 					} else {
 						// add to dom
-						$('body').append(obj);
+						// $('body').append(obj);
+						$('#objects-container').append(obj);
 						// position object
 						if (mode == 'center') {
 							// move to the center of mouseclick
@@ -1861,7 +1899,7 @@ $(document).ready(function() {
 			$.glue.canvas.update();
 		}, 100);
 	});
-	
+
 	// trigger menus on click and doubleclick
 	var menu_dblclick_timeout = false;
 	$('html').bind('click', function(e) {
@@ -1869,14 +1907,17 @@ $(document).ready(function() {
 		window.focus();
 		// we use 'html' here to give the colorpicker et al a chance to stop the 
 		// propagation of the event in 'body'
-		if (e.target == $('body').get(0)) {
+		// replacing body with #objects-container
+		if (e.target == $('#objects-container').get(0)) {
 			if (!$.glue.menu.is_shown()) {
 				if (menu_dblclick_timeout) {
+				/*
 					clearTimeout(menu_dblclick_timeout);
 					menu_dblclick_timeout = false;
 					// show page menu
 					$.glue.menu.show('page', e.clientX, e.clientY);
 					return false;
+				*/
 				}
 				menu_dblclick_timeout = setTimeout(function() {
 					menu_dblclick_timeout = false;
@@ -1909,7 +1950,23 @@ $(document).ready(function() {
 			}
 		}
 	});
-	
+
+	// page properties button to replace double-click when editing is on
+	// also a way to set the page properties menu to pop up from the bottom
+	// (there are definitely better ways to do this but I'm tired)
+	var btn_pageproperty = '<div id="glue-menu-pages-container" class="position-fixed bottom-2 marginbottom-medium left-0 zindex-999"></div><div class="position-fixed bottom-0 left-0 padding-small zindex-999"><button id="btn_openmenu" class="cursor-pointer float-left borderstyle-solid borderwidth-2 padding-small bordercolor-blue2 borderradius-2 left-1 fontsize-1 fontweight-bold color-blue2 backgroundcolor-tint10">Page properties menu</button></div>';
+	$('body').append(btn_pageproperty);
+	var responsive_design_guides_html = '<div class="responsive-design-guide-container"><div class="responsive-design-guide-middle"><div class="responsive-design-guide-inner"></div></div></div>';
+	$('body').prepend(responsive_design_guides_html);
+	$('#btn_openmenu').bind('click', function(e) {
+		$.glue.menu.show('page', 170);
+		var divsToMove = $('body .glue-menu-page').detach();
+		$('#glue-menu-pages-container').append(divsToMove);
+		$('#glue-menu-pages-container > div').css('position', 'relative');
+		$('#glue-menu-pages-container > div').css('top', 'initial');
+		return false;	
+	});
+
 	// I really don't know why, but when we don't handle the mousedown event here 
 	// double-clicking the page does select some object (the first child of body 
 	// on Firefox and the nearest element on Chrome)

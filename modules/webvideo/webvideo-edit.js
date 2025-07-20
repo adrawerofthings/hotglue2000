@@ -11,7 +11,7 @@ $(document).ready(function() {
 	//
 	// menu items
 	//
-	var elem = $('<img src="'+$.glue.base_url+'modules/webvideo/webvideo.png" alt="btn" title="embed a youtube or vimeo video" width="32" height="32">');
+	var elem = $('<div class="elemcustom">🎥 Embed a youtube or vimeo video</div>');
 	$(elem).bind('click', function(e) {
 		var url = prompt('Enter the video URL (e.g. http://www.youtube.com/watch?v=_mdVHEus0T8)');
 		if (!url) {
@@ -70,7 +70,7 @@ $(document).ready(function() {
 				// put the iframe behind some shield for editing
 				child = $('<div class="glue-webvideo-handle glue-ui" title="drag here"></div>');
 				$(elem).append(child);
-				$('body').append(elem);				
+				$('#objects-container').append(elem);				
 				// make width and height explicit
 				$(elem).css('width', $(elem).width()+'px');
 				$(elem).css('height', $(elem).height()+'px');
@@ -91,6 +91,7 @@ $(document).ready(function() {
 	//
 	// context menu items
 	//
+	/* auto play and loop are the devil by bye	
 	var elem = $('<div style="height: 32px; width: 32px;" title="toggle automatic playback of video (takes effect after a reload)">');
 	$(elem).bind('glue-menu-activate', function(e) {
 		var obj = $(this).data('owner');
@@ -180,4 +181,5 @@ $(document).ready(function() {
 		$(obj).children('iframe').html('');
 		$(obj).children('.glue-webvideo-handle').remove();
 	});
+	*/
 });

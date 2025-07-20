@@ -23,7 +23,7 @@ $(document).ready(function() {
 	//
 	// register menu items
 	//
-	var elem = $('<img src="'+$.glue.base_url+'modules/page/page-title.png" alt="btn" title="change page title" width="32" height="32">');
+	var elem = $('<div class="elemcustom">Change page title (for search results)</div>');
 	$(elem).bind('click', function(e) {
 		var title = $('title').html();
 		title = prompt('Change the page title', title);
@@ -34,8 +34,21 @@ $(document).ready(function() {
 		$.glue.backend({ method: 'glue.update_object', name: $.glue.page+'.page', 'page-title': title });
 	});
 	$.glue.menu.register('page', elem);
+
+	var elem = $('<div class="elemcustom">Edit page description (for search results)</div>');
+	$(elem).bind('click', function(e) {
+		var description = $('meta[property="og:description"]').attr('content') || 
+		                   $('meta[name="description"]').attr('content') || 
+		                   '';
+		description = prompt('Edit page description', description);
+		if (description === null) {
+			return;
+		}
+		$.glue.backend({ method: 'glue.update_object', name: $.glue.page+'.page', 'page-description': description });
+	});
+	$.glue.menu.register('page', elem);
 	
-	elem = $('<img src="'+$.glue.base_url+'modules/page/page-url.png" alt="btn" title="change the page&#039;s url" width="32" height="32">');
+	elem = $('<div class="elemcustom">Change page url</div>');
 	$(elem).bind('click', function(e) {
 		var old_pn = $.glue.page.split('.').shift();
 		var new_pn = prompt('Change the page URL', old_pn);
@@ -65,14 +78,14 @@ $(document).ready(function() {
 	$.glue.menu.register('page', elem);
 	
 	// TODO (later): only display if not already the starting page
-	elem = $('<img src="'+$.glue.base_url+'modules/page/page-set-startpage.png" alt="btn" title="make this the start page" width="32" height="32">');
+	elem = $('<div class="elemcustom">Make this the start page</div>');
 	$(elem).bind('click', function(e) {
 		$.glue.backend({ method: 'glue.set_startpage', page: $.glue.page });
 		$.glue.menu.hide();
 	});
 	$.glue.menu.register('page', elem);
 	
-	elem = $('<img src="'+$.glue.base_url+'img/background-color.png" alt="btn" title="change the background color" width="32" height="32">');
+	elem = $('<div class="elemcustom">Change background color</div>');
 	$(elem).bind('click', function(e) {
 		if ($('html').css('background-image').length != 0 && $('html').css('background-image') != 'none') {
 			if (confirm('Do you want to clear the current background image?')) {
@@ -101,7 +114,7 @@ $(document).ready(function() {
 	});
 	$.glue.menu.register('page', elem);
 	
-	elem = $('<img src="'+$.glue.base_url+'modules/page/page-new.png" alt="btn" title="create a new page" width="32" height="32">');
+	elem = $('<div class="elemcustom">Create a new page</div>');
 	$(elem).bind('click', function(e) {
 		$.glue.menu.hide();
 		var pn = prompt('Name the page to be created');
@@ -115,7 +128,7 @@ $(document).ready(function() {
 	});
 	$.glue.menu.register('page', elem);
 	
-	elem = $('<img src="'+$.glue.base_url+'modules/page/page-delete.png" alt="btn" title="delete page" width="32" height="32">');
+	elem = $('<div class="elemcustom">Delete page</div>');
 	$(elem).bind('click', function(e) {
 		if (confirm('Really delete the current page and all it\'s revisions?')) {
 			var pn = $.glue.page.split('.').shift();
@@ -140,7 +153,7 @@ $(document).ready(function() {
 	});
 	$.glue.menu.register('page', elem);
 	
-	elem = $('<div style="height: 32px; max-height: 32px; max-width: 32px; overflow: hidden; width: 32px;"><img src="'+$.glue.base_url+'modules/page/page-background-image.png" alt="btn" width="32" height="32"></div>');
+	elem = $('<div class="elemcustom">Upload a background image</div>');
 	var upload = {
 		error: function(e) {
 			if (e && e.target && e.target.status) {
@@ -168,7 +181,7 @@ $(document).ready(function() {
 	$.glue.upload.button(elem, { method: 'glue.upload_files', page: $.glue.page, preferred_module: 'page' }, upload);
 	$.glue.menu.register('page', elem);
 	
-	elem = $('<div id="glue-menu-page-background-scroll" alt="btn" style="height: 32px; width: 32px;" title="toggle between having the background image fixed or having it scroll with the rest of the page">');
+	elem = $('<div class="elemcustom">Toggle: background image fixed or scroll with page</div>');
 	$(elem).bind('glue-menu-activate', function(e) {
 		var elem = $('#glue-menu-page-background-scroll');
 		if ($('html').css('background-image').length != 0 && $('html').css('background-image') != 'none') {
@@ -199,7 +212,8 @@ $(document).ready(function() {
 	});
 	$.glue.menu.register('page', elem);
 	
-	elem = $('<img src="'+$.glue.base_url+'modules/page/page-background-image-pos.png" alt="btn" title="adjust background image selection" width="32" height="32">');
+	/*
+	elem = $('<div class="elemcustom">Adjust background image selection</div>');
 	$(elem).bind('glue-menu-activate', function(e) {
 		var elem = $('#glue-menu-page-background-scroll');
 		if ($('html').css('background-image').length != 0 && $('html').css('background-image') != 'none') {
@@ -243,7 +257,9 @@ $(document).ready(function() {
 		return false;
 	});
 	$.glue.menu.register('page', elem);
+	*/
 	
+	/*
 	elem = $('<img src="'+$.glue.base_url+'modules/page/page-grid.png" width="32" height="32">');
 	// also change tilte below
 	$(elem).attr('title', 'show/hide grid or change grid size by dragging ('+$.glue.grid.x()+'x'+$.glue.grid.y()+')');
@@ -292,4 +308,5 @@ $(document).ready(function() {
 		return false;
 	});
 	$.glue.menu.register('page', elem, 13);
+	*/
 });

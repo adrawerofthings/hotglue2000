@@ -147,6 +147,10 @@ function page_render_object($args)
 	if (isset($obj['page-title'])) {
 		html_title($obj['page-title']);
 	}
+	// set the html description
+	if (isset($obj['page-description'])) {
+		html_description($obj['page-description']);
+	}
 }
 
 
@@ -181,6 +185,10 @@ function page_render_page_early($args)
 
 	// set the html title to the page name by default
 	html_title(page_short($args['page']));
+
+	// set blank description by default
+	html_description("");
+
 }
 
 
@@ -246,7 +254,7 @@ function page_upload($args)
 	}
 	// check if supported file
 	if (!in_array($args['mime'], array('image/jpeg', 'image/png', 'image/gif')) || ($args['mime'] == '' && !in_array(filext($args['file']), array('jpg', 'jpeg', 'png', 'gif')))) {
-		return false;
+	    return false;
 	}
 	
 	// check if there is already a background-image and delete it

@@ -12,6 +12,8 @@
  *
  */
 
+@define('AUTH_METHOD', 'basic');	// none for localhost, basic for deployment
+@define('BASE_URL', 'https://yourhotglueaddress.com/'); // include final slash!
 @define('AUTH_USER', 'admin');
 @define('AUTH_PASSWORD', 'changeme');
 

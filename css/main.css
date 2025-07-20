@@ -2,13 +2,55 @@
 
 html, body {
 	/* default font */
-	font-family: Verdana, Geneva, Tahoma, sans-serif;
-	font-size: 13px;
-	line-height: 1.48em;
+	font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;
+	font-size: 14px;
+	line-height: 1.5;
+}
+h1 {
+	font-size: 14px;
+	margin: 0;
 }
 
 a, a:link, a:visited, a:active, a:hover {
 	/* this removes the blue color from links on Chrome 7.0.517.41 */
 	color: inherit;
 	text-decoration: inherit;
+}
+.image {
+	/* necessary for div enclosing images for border radius */
+	overflow: hidden;
+}
+.elemcustom {
+	background-color: rgba(255,255,255,0.9);
+	border-width: 1px;
+	border-style: solid;
+	border-color: rgba(233,233,233,1);
+	padding-top: 0.25em;
+	padding-bottom: 0.25em;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+	cursor: pointer;
+	font-size: 0.9em;
+	line-height: 1.2;
+	box-shadow: 0 0 3px #ffffff, 0 0 12px #ffffff;
+}
+
+/* rotate utility classes because I'm too lazy to deal with matrix values that come out of jQuery reading transform properties */
+.transform-rotate0deg {
+	transform: rotate(0);
+}
+.transform-rotate10deg {
+	transform: rotate(10deg);
+}
+.transform-rotate20deg {
+	transform: rotate(20deg);
+}
+.transform-rotate30deg {
+	transform: rotate(30deg);
+}
+.transform-rotate125deg {
+	transform: rotate(125deg);
+}
+.transform-rotate240deg {
+	transform: rotate(240deg);
 }

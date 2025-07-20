@@ -73,3 +73,6 @@ $.glue.error = function()
 		}
 	};
 }();
+
+//value for storing h1 location
+var h1_div_id = "";

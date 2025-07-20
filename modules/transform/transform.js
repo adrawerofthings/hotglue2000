@@ -21,7 +21,7 @@ $(document).ready(function() {
 	// register menu items
 	//
 	var elem;
-	elem = $('<img src="'+$.glue.base_url+'modules/transform/transform-flip.png" alt="btn" title="flip object" width="32" height="32">');
+	elem = $('<div class="elemcustom">🥋 Flip object</div>');
 	$(elem).bind('click', function(e) {
 		var that = this;
 		var obj = $(this).data('owner');
@@ -65,28 +65,38 @@ $(document).ready(function() {
 		});
 	$.glue.contextmenu.register('object', 'object-transform-flip', elem, 5);
 
-/* implement this later */
-/*	elem = $('<img src="'+$.glue.base_url+'modules/transform/transform-rotate.png" alt="btn" title="rotate object" width="32" height="32">');
-	$(elem).bind('mousedown', function(e) {
+	elem = $('<div class="elemcustom">↩️ Rotate object</div>');
+	$(elem).bind('click', function(e) {
 		var obj = $(this).data('owner');
-		if ($(obj).css('-moz-transform') != '') {
-			var o = $(obj).css('-moz-transform');
-		} else { var o = $(obj).getAttribute('style'); }
-		if (o == null || o.length < 6) {
-			o = 'matrix(1, 0, 0, 1, 0, 0)';
+		console.log($(obj).css('transform'));
+		// got value for 10 degrees rotate transform
+		if ($(obj).css('transform') == 'matrix(0.984808, 0.173648, -0.173648, 0.984808, 0, 0)') {
+			$(obj).css('transform', 'rotate(20deg)');
+		// value for 20 degrees rotate transform
+		} else if ($(obj).css('transform') == 'matrix(0.939693, 0.34202, -0.34202, 0.939693, 0, 0)') {
+			$(obj).css('transform', 'rotate(30deg)');
+		// value for 30 degrees rotate transform
+		} else if ($(obj).css('transform') == 'matrix(0.866025, 0.5, -0.5, 0.866025, 0, 0)') {
+			$(obj).css('transform', 'rotate(110deg)');
+		// value for 110 degrees rotate transform
+		} else if ($(obj).css('transform') == 'matrix(-0.34202, 0.939693, -0.939693, -0.34202, 0, 0)') {
+			$(obj).css('transform', 'rotate(225deg)');
+		// value for 225 degrees rotate transform
+		} else if ($(obj).css('transform') == 'matrix(-0.707107, -0.707107, 0.707107, -0.707107, 0, 0)') {
+			$(obj).css('transform', 'rotate(330deg)');
+		// value for 330 degrees rotate transform
+		} else if ($(obj).css('transform') == 'matrix(0.866025, -0.5, 0.5, 0.866025, 0, 0)') {
+			$(obj).css('transform', 'rotate(340deg)');
+		// value for 340 degrees rotate transform
+		} else if ($(obj).css('transform') == 'matrix(0.939693, -0.34202, 0.34202, 0.939693, 0, 0)') {
+			$(obj).css('transform', 'rotate(350deg)');
+		// value for 350 degrees rotate transform
+		} else if ($(obj).css('transform') == 'matrix(0.984808, -0.173648, 0.173648, 0.984808, 0, 0)') {
+			$(obj).css('transform', 'none');
+		} else {
+			$(obj).css('transform', 'rotate(10deg)');
 		}
-		var o = matrixToArray(o);
-		$.glue.slider(e, function(x, y) {
-			var r = y+'deg';
-			$(obj).transform({rotate: ''+r+'', matrix: ''+o+''}, {forceMatrix: true});
-//			$(obj).css('-webkit-transform','rotate('+r+')');
-
-		}, function(x, y) {
-			$.glue.object.save(obj);
-		});
-		return false;
+		$.glue.object.save(obj);
 	});
 	$.glue.contextmenu.register('object', 'object-transform-rotate', elem, 6);
-*/
-
 });

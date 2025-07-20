@@ -142,6 +142,7 @@ function html_encode_str_smart($html)
 	}
 	
 	// encode < and > where needed
+	
 	$cur = 0;
 	while ($cur < strlen($html)) {
 		$char = substr($html, $cur, 1);
@@ -207,6 +208,7 @@ function html_encode_str_smart($html)
 			$cur++;
 		}
 	}
+	
 	
 	return $html;
 }
