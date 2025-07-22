@@ -180,7 +180,42 @@ $(document).ready(function() {
 	};
 	$.glue.upload.button(elem, { method: 'glue.upload_files', page: $.glue.page, preferred_module: 'page' }, upload);
 	$.glue.menu.register('page', elem);
+
+	elem = $('<div class="elemcustom">Change background image size</div>');
+	$(elem).bind('click', function(e) {
+		
+		if ($('html').css('background-size') == 'cover') {
+			$('html').css('background-size', '48px');
+		} else if ($('html').css('background-size') == '48px' || $('html').css('background-size') == '48px auto') {
+			$('html').css('background-size', '128px');
+		} else if ($('html').css('background-size') == '128px' || $('html').css('background-size') == '128px auto') {
+			$('html').css('background-size', '50%');
+		} else if ($('html').css('background-size') == '50%') {
+			$('html').css('background-size', '100%');
+		} else {		
+			$('html').css('background-size', 'cover');
+		}
+		var bgsize = $('html').css('background-size');
+		$.glue.backend({ method: 'glue.update_object', name: $.glue.page+'.page', 'page-background-image-size': bgsize });
+	});
+	$.glue.menu.register('page', elem);
+
+	elem = $('<div class="elemcustom">Remove background image</div>');
+	$(elem).bind('click', function(e) {
+		if ($('html').css('background-image').length != 0 && $('html').css('background-image') != 'none') {
+			if (confirm('Do you want to clear the current background image?')) {
+				$.glue.backend({ method: 'page.clear_background_img', page: $.glue.page });
+				$('html').css('background-image', '');
+			} else {
+				$.glue.menu.hide();
+				return;
+			}
+		}
+		$.glue.menu.hide();
+	});
+	$.glue.menu.register('page', elem);
 	
+	/*
 	elem = $('<div class="elemcustom">Toggle: background image fixed or scroll with page</div>');
 	$(elem).bind('glue-menu-activate', function(e) {
 		var elem = $('#glue-menu-page-background-scroll');
@@ -197,6 +232,7 @@ $(document).ready(function() {
 			$(elem).css('display', 'none');
 		}
 	});
+	
 	$(elem).bind('click', function(e) {
 		if ($('html').css('background-attachment') == 'fixed') {
 			$('html').css('background-attachment', 'scroll');
@@ -211,7 +247,7 @@ $(document).ready(function() {
 		}
 	});
 	$.glue.menu.register('page', elem);
-	
+	*/
 	/*
 	elem = $('<div class="elemcustom">Adjust background image selection</div>');
 	$(elem).bind('glue-menu-activate', function(e) {

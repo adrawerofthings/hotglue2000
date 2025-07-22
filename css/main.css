@@ -2,7 +2,7 @@
 
 html, body {
 	/* default font */
-	font-family: -apple-system, BlinkMacSystemFont, 'avenir next', avenir, 'helvetica neue', helvetica, ubuntu, roboto, noto, 'segoe ui', arial, sans-serif;
+	font-family: sans-serif;
 	font-size: 14px;
 	line-height: 1.5;
 }

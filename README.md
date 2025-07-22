@@ -55,6 +55,7 @@ The installation is more or less the same as the previous version. So read the o
 - The edit button assumes that if there is a `.htaccess` file in the directory, then it is working properly and clean URLs are on.
 - Minified files have not been updated yet.
 - Poor documentation.
+- Unused code from previous versions.
 
 ## Special thanks
 

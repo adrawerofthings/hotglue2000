@@ -64,9 +64,11 @@ function controller_create_page($args)
 	body_append(tab(4).'</div>'.nl());
 	body_append(tab(3).'</div>'.nl());
 	body_append(tab(2).'</div>'.nl());
+	/*
 	body_append(tab(2).'<div style="position: absolute; left: 200px; top: -10px; z-index: 2;">'.nl());
 	body_append(tab(3).'<img src="'.htmlspecialchars(base_url(), ENT_COMPAT, 'UTF-8').'img/hotglue-404.png" alt="404">'.nl());
 	body_append(tab(2).'</div>'.nl());
+	*/
 	body_append(tab(1).'</div>'.nl());
 	echo html_finalize();
 }

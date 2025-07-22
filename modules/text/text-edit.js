@@ -496,15 +496,18 @@ $(document).ready(function() {
 	$(elem).bind('click', function(e) {
 		var obj = $(this).data('owner');
 		
-		if ($(obj).hasClass('fontfamily-serif')) {
-			$(obj).removeClass('fontfamily-serif');
-			$(obj).addClass('fontfamily-monospace');
-		} else if ($(obj).hasClass('fontfamily-monospace')) {
-			$(obj).removeClass('fontfamily-monospace');
-			$(obj).addClass('fontfamily-sansserif');
-		} else /*if ($(obj).hasClass('fontfamily-sansserif'))*/ {
-			$(obj).removeClass('fontfamily-sansserif');
-			$(obj).addClass('fontfamily-serif');
+		if ($(obj).css("font-family") == "serif") {
+			$(obj).css("font-family", "monospace");
+		} else if ($(obj).css("font-family") == "monospace") {
+			$(obj).css("font-family", "cursive");
+		} else if ($(obj).css("font-family") == "cursive") {
+			$(obj).css("font-family", "fantasy");
+		} else if ($(obj).css("font-family") == "fantasy") {
+			$(obj).css("font-family", "fangsong");
+		} else if ($(obj).css("font-family") == "fangsong") {
+			$(obj).css("font-family", "sans-serif");
+		} else {
+			$(obj).css("font-family", "serif"); 
 		}
 
 		$.glue.object.save(obj);

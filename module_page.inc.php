@@ -143,6 +143,10 @@ function page_render_object($args)
 	if (!empty($obj['page-background-image-position'])) {
 		html_css('background-position', $obj['page-background-image-position']);
 	}
+	// background-image-size
+	if (!empty($obj['page-background-image-size'])) {
+		html_css('background-size', $obj['page-background-image-size']);
+	}
 	// set the html title
 	if (isset($obj['page-title'])) {
 		html_title($obj['page-title']);
